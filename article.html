@@ -1,0 +1,51 @@
+<!-- article.html -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article - Microbiology28</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+<div class="logo">Microbiology28</div>
+<nav>
+<a href="index.html">Home</a>
+<a href="categories.html">Categories</a>
+<a href="admin.html">Admin</a>
+</nav>
+</header>
+
+
+<main>
+<section id="articleDetail">
+<!-- Article content injected by JS -->
+</section>
+</main>
+
+
+<footer>
+<p>Microbiology28 &copy; 2025</p>
+</footer>
+
+
+<script src="js/main.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id');
+const article = getArticleById(id);
+const container = document.getElementById('articleDetail');
+if(article){
+container.innerHTML = `
+<h2>${article.title}</h2>
+<p><strong>Category:</strong> ${article.category}</p>
+<p><strong>Tags:</strong> ${article.tags.join(', ')}</p>
+<p>${article.content}</p>
+`;
+} else {
+container.innerHTML='<p>Article not found.</p>';
+}
+</script>
+</body>
+</html>

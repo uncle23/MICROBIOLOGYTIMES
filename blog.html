@@ -1,0 +1,110 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microbiology News - Microbiology28</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">🧫 Microbiology28</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="blog.html">News</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<main>
+  <h2>Microbiology News & Reports</h2>
+
+  <!-- Blog submission form (admin only) -->
+  <section id="blogFormSection" style="display:block;">
+    <h3>Write a Blog / Report</h3>
+    <input type="text" id="blogTitle" placeholder="Title"><br>
+    <textarea id="blogContent" rows="6" placeholder="Write about trends, discoveries, gaps, or recommendations..."></textarea><br>
+    <button id="submitBlog">Submit Blog</button>
+  </section>
+
+  <!-- Blog feed -->
+  <section id="blogFeed">
+    <!-- Blogs injected here by JS -->
+  </section>
+</main>
+
+<footer>
+  <p>Microbiology28 &copy; 2025</p>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// BLOGS Logic
+let BLOGS = JSON.parse(localStorage.getItem('blogs')) || [];
+
+// Submit a blog
+document.getElementById('submitBlog')?.addEventListener('click', ()=>{
+  const title = document.getElementById('blogTitle').value.trim();
+  const content = document.getElementById('blogContent').value.trim();
+  if(!title || !content) return alert('Title and content required');
+  const blog = {id:'blog_'+Date.now(), title, content, comments:[], created:new Date().toLocaleString()};
+  BLOGS.push(blog);
+  localStorage.setItem('blogs', JSON.stringify(BLOGS));
+  renderBlogs();
+  document.getElementById('blogTitle').value='';
+  document.getElementById('blogContent').value='';
+});
+
+// Render blogs and comment sections
+function renderBlogs(){
+  const container = document.getElementById('blogFeed');
+  if(!container) return;
+  container.innerHTML='';
+  BLOGS.slice().reverse().forEach(blog=>{
+    const blogCard = document.createElement('div');
+    blogCard.className='article-card';
+    blogCard.innerHTML = `
+      <h3>${blog.title}</h3>
+      <p>${blog.content}</p>
+      <p><small>Posted: ${blog.created}</small></p>
+      <div id="comments_${blog.id}"></div>
+      <input type="text" id="commentInput_${blog.id}" placeholder="Write a comment">
+      <button onclick="addComment('${blog.id}')">Comment</button>
+    `;
+    container.appendChild(blogCard);
+    renderComments(blog.id);
+  });
+}
+
+// Add comment
+function addComment(blogId){
+  const input = document.getElementById(`commentInput_${blogId}`);
+  const text = input.value.trim();
+  if(!text) return;
+  const blog = BLOGS.find(b=>b.id===blogId);
+  blog.comments.push({text, created:new Date().toLocaleString()});
+  localStorage.setItem('blogs', JSON.stringify(BLOGS));
+  input.value='';
+  renderComments(blogId);
+}
+
+// Render comments
+function renderComments(blogId){
+  const blog = BLOGS.find(b=>b.id===blogId);
+  const container = document.getElementById(`comments_${blogId}`);
+  container.innerHTML = '<h4>Comments:</h4>';
+  blog.comments.forEach(c=>{
+    const p = document.createElement('p');
+    p.textContent = `${c.text} (${c.created})`;
+    container.appendChild(p);
+  });
+}
+
+// Initial render
+renderBlogs();
+</script>
+</body>
+</html>
+```

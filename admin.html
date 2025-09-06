@@ -1,0 +1,61 @@
+<!-- admin.html -->
+<label>Title:</label><br>
+<input type="text" id="articleTitle" required><br>
+<label>Category:</label><br>
+<input type="text" id="articleCategory" required><br>
+<label>Tags (comma-separated):</label><br>
+<input type="text" id="articleTags"><br>
+<label>Content:</label><br>
+<textarea id="articleContent" rows="6"></textarea><br>
+<label>Upload file (PDF/Image):</label><br>
+<input type="file" id="fileUpload"><br>
+<div id="filePreview"></div>
+<label>Published:</label>
+<input type="checkbox" id="articlePublished" checked><br><br>
+<button id="saveArticle">Save Article</button>
+</section>
+</main>
+
+
+<footer>
+<p>Microbiology28 Admin Panel</p>
+</footer>
+
+
+<script src="js/main.js"></script>
+<script>
+const loginForm = document.getElementById('loginForm');
+const editor = document.getElementById('editor');
+loginForm.addEventListener('submit', (e)=>{
+e.preventDefault();
+const username = document.getElementById('username').value;
+const password = document.getElementById('password').value;
+if(login(username,password)){
+loginForm.style.display='none';
+editor.style.display='block';
+} else {
+document.getElementById('loginError').textContent='Invalid credentials';
+}
+});
+
+
+document.getElementById('saveArticle').addEventListener('click', ()=>{
+const id = 'art_' + Date.now();
+const article = {
+id,
+title: document.getElementById('articleTitle').value,
+category: document.getElementById('articleCategory').value,
+tags: document.getElementById('articleTags').value.split(',').map(t=>t.trim()),
+content: document.getElementById('articleContent').value,
+published: document.getElementById('articlePublished').checked,
+created: new Date().toLocaleDateString()
+};
+saveArticle(article);
+alert('Article saved!');
+});
+
+
+previewFile('fileUpload','filePreview');
+</script>
+</body>
+</html>
